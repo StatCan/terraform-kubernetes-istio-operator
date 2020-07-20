@@ -30,8 +30,9 @@ resource "null_resource" "istio_operator_namespace_label" {
   }
 
   provisioner "local-exec" {
-    when    = "destroy"
-    command = "kubectl label ns ${var.namespace} istio-operator-managed- istio-injection-"
+    when      = "destroy"
+    namespace = self.triggers.namespace
+    command   = "kubectl label ns ${var.namespace} istio-operator-managed- istio-injection-"
   }
 
   depends_on = [
@@ -233,6 +234,7 @@ resource "local_file" "istio_operator_deployment" {
 resource "null_resource" "istio_operator_deployment" {
   triggers = {
     hash_istio_operator_deployment = filesha256(local_file.istio_operator_deployment.content),
+    namespace                      = var.namespace
   }
 
   provisioner "local-exec" {
@@ -240,8 +242,9 @@ resource "null_resource" "istio_operator_deployment" {
   }
 
   provisioner "local-exec" {
-    when    = "destroy"
-    command = "kubectl -n ${var.namespace} delete deployment istio-operator"
+    when     = "destroy"
+    namepace = self.triggers.namespace
+    command  = "kubectl -n ${var.namespace} delete deployment istio-operator"
   }
 
   depends_on = [
