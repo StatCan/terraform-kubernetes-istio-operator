@@ -31,8 +31,7 @@ resource "null_resource" "istio_operator_namespace_label" {
 
   provisioner "local-exec" {
     when      = "destroy"
-    namespace = self.triggers.namespace
-    command   = "kubectl label ns ${var.namespace} istio-operator-managed- istio-injection-"
+    command   = "kubectl label ns ${self.triggers.namespace} istio-operator-managed- istio-injection-"
   }
 
   depends_on = [
@@ -243,8 +242,7 @@ resource "null_resource" "istio_operator_deployment" {
 
   provisioner "local-exec" {
     when     = "destroy"
-    namepace = self.triggers.namespace
-    command  = "kubectl -n ${var.namespace} delete deployment istio-operator"
+    command  = "kubectl -n ${self.triggers.namespace} delete deployment istio-operator"
   }
 
   depends_on = [
