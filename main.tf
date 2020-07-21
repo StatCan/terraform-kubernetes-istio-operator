@@ -41,11 +41,11 @@ resource "null_resource" "istio_operator_namespace_label" {
 
 resource "null_resource" "istio_operator_crd" {
   triggers = {
-    hash_istio_operator_crd = filesha256("${path.module}/config/istio-operator-crd.yaml"),
+    hash_istio_operator_crd = filesha256("${path.module}/config/iop-crd.yaml"),
   }
 
   provisioner "local-exec" {
-    command = "kubectl apply -f ${"${path.module}/config/istio-operator-crd.yaml"}"
+    command = "kubectl apply -f ${"${path.module}/config/iop-crd.yaml"}"
   }
 
   provisioner "local-exec" {
