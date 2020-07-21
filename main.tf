@@ -30,7 +30,7 @@ resource "null_resource" "istio_operator_namespace_label" {
   }
 
   provisioner "local-exec" {
-    when      = "destroy"
+    when      = destroy
     command   = "kubectl label ns ${self.triggers.namespace} istio-operator-managed- istio-injection-"
   }
 
@@ -49,7 +49,7 @@ resource "null_resource" "istio_operator_crd" {
   }
 
   provisioner "local-exec" {
-    when    = "destroy"
+    when    = destroy
     command = "kubectl delete crd istiooperators.install.istio.io"
   }
 
@@ -241,7 +241,7 @@ resource "null_resource" "istio_operator_deployment" {
   }
 
   provisioner "local-exec" {
-    when     = "destroy"
+    when     = destroy
     command  = "kubectl -n ${self.triggers.namespace} delete deployment istio-operator"
   }
 
