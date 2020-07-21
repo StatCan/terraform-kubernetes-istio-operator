@@ -232,7 +232,7 @@ resource "local_file" "istio_operator_deployment" {
 # https://www.hashicorp.com/blog/deploy-any-resource-with-the-new-kubernetes-provider-for-hashicorp-terraform/
 resource "null_resource" "istio_operator_deployment" {
   triggers = {
-    hash_istio_operator_deployment = filesha256(local_file.istio_operator_deployment.content),
+    hash_istio_operator_deployment = sha256(local_file.istio_operator_deployment.content),
     namespace                      = var.namespace
   }
 
