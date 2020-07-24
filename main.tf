@@ -30,8 +30,8 @@ resource "null_resource" "istio_operator_namespace_label" {
   }
 
   provisioner "local-exec" {
-    when      = destroy
-    command   = "kubectl label ns ${self.triggers.namespace} istio-operator-managed- istio-injection-"
+    when    = destroy
+    command = "kubectl label ns ${self.triggers.namespace} istio-operator-managed- istio-injection-"
   }
 
   depends_on = [
@@ -64,6 +64,8 @@ resource "kubernetes_service_account" "istio_operator_service_account" {
     name      = "istio-operator"
     namespace = var.namespace
   }
+
+  automount_service_account_token = true
 
   depends_on = [
     "null_resource.dependency_getter",
@@ -241,8 +243,8 @@ resource "null_resource" "istio_operator_deployment" {
   }
 
   provisioner "local-exec" {
-    when     = destroy
-    command  = "kubectl -n ${self.triggers.namespace} delete deployment istio-operator"
+    when    = destroy
+    command = "kubectl -n ${self.triggers.namespace} delete deployment istio-operator"
   }
 
   depends_on = [
