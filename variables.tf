@@ -20,5 +20,10 @@ variable "namespace" {
 
 variable "tag" {
   description = "The image tag to use."
-  default     = "1.6.5"
+  default     = "1.6.8"
+}
+
+variable "iop_spec" {
+  description = "The specification of the IstioOperator API."
+  default     = ""
 }
