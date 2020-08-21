@@ -8,6 +8,10 @@ This module installs the Istio Operator. It attempts to replicate the installati
 istioctl operator init
 ```
 
+This module also deploys a manifest for IstioOperator which is used to deploy the Istio control plane. 
+It can be modified by specifiying yaml that aligns with the [IstioOperator API](https://istio.io/latest/docs/reference/config/istio.operator.v1alpha1/)
+in the **iop_spec** variable.
+
 ## Security Controls
 
 The following security controls can be met through configuration of this template:
@@ -45,7 +49,6 @@ module "istio_operator" {
   hub             = "docker.io/istio"
   tag             = "1.6.8"
 
-
   iop_spec = <<EOF
 addonComponents:
   ...
@@ -72,4 +75,4 @@ EOF
 
 | Date     | Release | Change            |
 | -------- | ------- | ----------------- |
-| 20200714 | v1.0.0  | 1st major version |
+| 20200821 | v1.0.0  | 1st release       |
