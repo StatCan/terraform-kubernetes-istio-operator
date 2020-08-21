@@ -43,8 +43,17 @@ module "istio_operator" {
   namespace       = "istio-operator"
   istio_namespace = "istio-system"
   hub             = "docker.io/istio"
-  tag             = "1.6.5"
+  tag             = "1.6.8"
 
+
+  iop_spec = <<EOF
+addonComponents:
+  ...
+components:
+  ...
+values:
+  ...
+EOF
 }
 ```
 
@@ -55,8 +64,9 @@ module "istio_operator" {
 | namespace       | string          | no       | istio-operator  | The namespace in which to install the Istio Operator.          |
 | dependencies    | list of strings | no       |                 | The Terraform dependencies to be used by the module.           |
 | hub             | string          | no       | docker.io/istio | The hub where the image repositories are located.              |
-| tag             | string          | no       | 1.6.5           | The tag of the version of the Istio Operator to install.       |
+| tag             | string          | no       | 1.6.8           | The tag of the version of the Istio Operator to install.       |
 | istio_namespace | string          | no       | istio-system    | The namespace where the Istio control plane will be installed. |
+| iop_spec        | string          | no       | ""              | The specification for the IstioOperator API.                   |
 
 ## History
 

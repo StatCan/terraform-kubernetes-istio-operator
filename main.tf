@@ -218,28 +218,28 @@ resource "kubernetes_service" "istio_operator_service" {
   ]
 }
 
-resource "local_file" "istio_operator_deployment" {
-  content = templatefile("${path.module}/config/iop-deployment.yaml", {
+resource "local_file" "istio_operator_controller" {
+  content = templatefile("${path.module}/config/iop-controller.yaml", {
     istio_namespace = var.istio_namespace
     hub             = var.hub
     tag             = var.tag
   })
 
-  filename = "${path.module}/iop-deployment.yaml"
+  filename = "${path.module}/iop-controller.yaml"
 }
 
 # Unable to use the kubernetes provider deployement due to the need for 
 # the Downward API in the environment variables.
 # This will be rectified once we are on 1.17 and the kubernetes provider is officially updated 
 # https://www.hashicorp.com/blog/deploy-any-resource-with-the-new-kubernetes-provider-for-hashicorp-terraform/
-resource "null_resource" "istio_operator_deployment" {
+resource "null_resource" "istio_operator_controller" {
   triggers = {
-    hash_istio_operator_deployment = sha256(local_file.istio_operator_deployment.content),
+    hash_istio_operator_controller = sha256(local_file.istio_operator_controller.content),
     namespace                      = var.namespace
   }
 
   provisioner "local-exec" {
-    command = "kubectl -n ${var.namespace} apply -f ${local_file.istio_operator_deployment.filename}"
+    command = "kubectl -n ${var.namespace} apply -f ${local_file.istio_operator_controller.filename}"
   }
 
   provisioner "local-exec" {
@@ -250,7 +250,43 @@ resource "null_resource" "istio_operator_deployment" {
   depends_on = [
     "null_resource.dependency_getter",
     "kubernetes_service_account.istio_operator_service_account",
-    "local_file.istio_operator_deployment",
+    "local_file.istio_operator_controller",
+  ]
+}
+
+resource "local_file" "istio_operator" {
+  content = templatefile("${path.module}/config/iop.yaml", {
+    namespace = var.istio_namespace
+    spec      = var.iop_spec
+  })
+
+  filename = "${path.module}/iop.yaml"
+}
+
+# Unable to use the kubernetes provider deployement due to the need for 
+# the Downward API in the environment variables.
+# This will be rectified once we are on 1.17 and the kubernetes provider is officially updated 
+# https://www.hashicorp.com/blog/deploy-any-resource-with-the-new-kubernetes-provider-for-hashicorp-terraform/
+resource "null_resource" "istio_operator" {
+  triggers = {
+    hash_istio_operator = sha256(local_file.istio_operator.content),
+    istio_namespace     = var.istio_namespace
+  }
+
+  provisioner "local-exec" {
+    command = "kubectl -n ${var.istio_namespace} apply -f ${local_file.istio_operator.filename}"
+  }
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = "kubectl -n ${self.triggers.istio_namespace} delete deployment istio-operator"
+  }
+
+  depends_on = [
+    "null_resource.dependency_getter",
+    "kubernetes_service_account.istio_operator_service_account",
+    "local_file.istio_operator",
+    "null_resource.istio_operator_crd",
   ]
 }
 
@@ -266,6 +302,6 @@ resource "null_resource" "dependency_setter" {
     "kubernetes_cluster_role.istio_operator_cluster_role",
     "kubernetes_cluster_role_binding.istio_operator_cluster_role_binding",
     "kubernetes_service.istio_operator_service",
-    "null_resource.istio_operator_deployment",
+    "null_resource.istio_operator_controller",
   ]
 }
