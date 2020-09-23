@@ -277,11 +277,6 @@ resource "null_resource" "istio_operator" {
     command = "kubectl -n ${var.istio_namespace} apply -f ${local_file.istio_operator.filename}"
   }
 
-  provisioner "local-exec" {
-    when    = destroy
-    command = "kubectl -n ${self.triggers.istio_namespace} delete deployment istio-operator"
-  }
-
   depends_on = [
     "null_resource.dependency_getter",
     "kubernetes_service_account.istio_operator_service_account",
