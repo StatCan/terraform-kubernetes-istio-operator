@@ -219,7 +219,7 @@ resource "kubernetes_service" "istio_operator_service" {
 }
 
 resource "local_file" "istio_operator_controller" {
-  content = templatefile("${path.module}/config/iop-controller.yaml", {
+  sensitive_content = templatefile("${path.module}/config/iop-controller.yaml", {
     istio_namespace = var.istio_namespace
     hub             = var.hub
     tag             = var.tag
@@ -234,8 +234,8 @@ resource "local_file" "istio_operator_controller" {
 # https://www.hashicorp.com/blog/deploy-any-resource-with-the-new-kubernetes-provider-for-hashicorp-terraform/
 resource "null_resource" "istio_operator_controller" {
   triggers = {
-    hash_istio_operator_controller = sha256(local_file.istio_operator_controller.content),
-    namespace                      = var.namespace
+    manifest  = local_file.istio_operator_controller.sensitive_content,
+    namespace = var.namespace
   }
 
   provisioner "local-exec" {
@@ -255,7 +255,7 @@ resource "null_resource" "istio_operator_controller" {
 }
 
 resource "local_file" "istio_operator" {
-  content = templatefile("${path.module}/config/iop.yaml", {
+  sensitive_content = templatefile("${path.module}/config/iop.yaml", {
     namespace = var.istio_namespace
     spec      = var.iop_spec
   })
@@ -269,8 +269,8 @@ resource "local_file" "istio_operator" {
 # https://www.hashicorp.com/blog/deploy-any-resource-with-the-new-kubernetes-provider-for-hashicorp-terraform/
 resource "null_resource" "istio_operator" {
   triggers = {
-    hash_istio_operator = sha256(local_file.istio_operator.content),
-    istio_namespace     = var.istio_namespace
+    manifest        = local_file.istio_operator.sensitive_content,
+    istio_namespace = var.istio_namespace
   }
 
   provisioner "local-exec" {
