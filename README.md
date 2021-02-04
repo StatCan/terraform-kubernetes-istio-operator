@@ -29,6 +29,9 @@ This module will label the namespace provided as the *namespace* variable with t
 
 These labels will be removed when the module is destroyed.
 
+## Module Versioning
+As of release 1.6.14, the modules will align with the version of the Istio Operator they are installing.
+
 ## Optional (depending on options configured):
 
 * None
@@ -37,17 +40,17 @@ These labels will be removed when the module is destroyed.
 
 ```terraform
 module "istio_operator" {
-  source = "git::https://gitlab.k8s.cloud.statcan.ca/cloudnative/terraform/modules/terraform-kubernetes-istio-operator?ref=v1.0.0"
+  source = "git::https://gitlab.k8s.cloud.statcan.ca/cloudnative/terraform/modules/terraform-kubernetes-istio-operator?ref=v1.6.14"
 
   dependencies  = [
-    "${module.namespace_cert_manager.depended_on}",
+    module.namespace_cert_manager.depended_on,
   ]
 
   # The following are variables that can be specified, but come with sane defaults
   namespace       = "istio-operator"
   istio_namespace = "istio-system"
   hub             = "docker.io/istio"
-  tag             = "1.6.8"
+  tag             = "1.6.14"
 
   iop_spec = <<EOF
 addonComponents:
@@ -67,12 +70,13 @@ EOF
 | namespace       | string          | no       | istio-operator  | The namespace in which to install the Istio Operator.          |
 | dependencies    | list of strings | no       |                 | The Terraform dependencies to be used by the module.           |
 | hub             | string          | no       | docker.io/istio | The hub where the image repositories are located.              |
-| tag             | string          | no       | 1.6.8           | The tag of the version of the Istio Operator to install.       |
+| tag             | string          | no       | 1.6.14          | The tag of the version of the Istio Operator to install.       |
 | istio_namespace | string          | no       | istio-system    | The namespace where the Istio control plane will be installed. |
 | iop_spec        | string          | no       | ""              | The specification for the IstioOperator API.                   |
 
 ## History
 
-| Date     | Release | Change            |
-| -------- | ------- | ----------------- |
-| 20200821 | v1.0.0  | 1st release       |
+| Date     | Release | Change                                                    |
+| -------- | ------- | --------------------------------------------------------- |
+| 20200821 | v1.0.0  | 1st release                                               |
+| 20210204 | v1.6.14 | Update to use the manifest dump of Istio Operator 1.6.14. |
