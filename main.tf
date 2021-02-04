@@ -142,7 +142,7 @@ resource "kubernetes_cluster_role" "istio_operator_cluster_role" {
   rule {
     api_groups = ["monitoring.coreos.com"]
     resources  = ["servicemonitors"]
-    verbs      = ["get", "create"]
+    verbs      = ["get", "create", "update"]
   }
 
   rule {
