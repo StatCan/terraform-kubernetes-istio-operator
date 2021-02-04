@@ -20,7 +20,7 @@ variable "namespace" {
 
 variable "tag" {
   description = "The image tag to use."
-  default     = "1.6.8"
+  default     = "1.6.14"
 }
 
 variable "iop_spec" {
