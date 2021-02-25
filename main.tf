@@ -218,40 +218,78 @@ resource "kubernetes_service" "istio_operator_service" {
   ]
 }
 
-resource "local_file" "istio_operator_controller" {
-  sensitive_content = templatefile("${path.module}/config/iop-controller.yaml", {
-    istio_namespace = var.istio_namespace
-    hub             = var.hub
-    tag             = var.tag
-  })
-
-  filename = "${path.module}/iop-controller.yaml"
-}
-
-# Unable to use the kubernetes provider deployement due to the need for 
-# the Downward API in the environment variables.
-# This will be rectified once we are on 1.17 and the kubernetes provider is officially updated 
-# https://www.hashicorp.com/blog/deploy-any-resource-with-the-new-kubernetes-provider-for-hashicorp-terraform/
-resource "null_resource" "istio_operator_controller" {
-  triggers = {
-    manifest  = local_file.istio_operator_controller.sensitive_content,
-    namespace = var.namespace
+resource "kubernetes_deployment" "istio_operator_controller" {
+  metadata {
+    name = "istio-operator"
   }
 
-  provisioner "local-exec" {
-    command = "kubectl -n ${var.namespace} apply -f ${local_file.istio_operator_controller.filename}"
-  }
+  spec {
+    replicas = 1
 
-  provisioner "local-exec" {
-    when    = destroy
-    command = "kubectl -n ${self.triggers.namespace} delete deployment istio-operator"
-  }
+    selector {
+      match_labels = {
+        name = "istio-operator"
+      }
+    }
 
-  depends_on = [
-    "null_resource.dependency_getter",
-    "kubernetes_service_account.istio_operator_service_account",
-    "local_file.istio_operator_controller",
-  ]
+    template {
+      metadata {
+        labels = {
+          name = "istio-operator"
+        }
+      }
+
+      spec {
+        service_account_name = "istio-operator"
+
+        container {
+          name              = "istio-operator"
+          image             = "${var.hub}/operator:${var.tag}"
+          image_pull_policy = "IfNotPresent"
+
+          resources {
+            limits = {
+              cpu    = "200m"
+              memory = "256Mi"
+            }
+
+            requests = {
+              cpu    = "50m"
+              memory = "128Mi"
+            }
+          }
+
+          env {
+            name  = "WATCH_NAMESPACE"
+            value = var.istio_namespace
+          }
+
+          env {
+            name = "LEADER_ELECTION_NAMESPACE"
+            value_from {
+              field_ref {
+                field_path = "metadata.namespace"
+              }
+            }
+          }
+
+          env {
+            name = "POD_NAME"
+            value_from {
+              field_ref  {
+                field_path = "metadata.name"
+              }
+            }
+          }
+
+          env {
+            name  = "OPERATOR_NAME"
+            value = "istio-operator"
+          }
+        }
+      }
+    }
+  }
 }
 
 resource "local_file" "istio_operator" {
@@ -297,6 +335,6 @@ resource "null_resource" "dependency_setter" {
     "kubernetes_cluster_role.istio_operator_cluster_role",
     "kubernetes_cluster_role_binding.istio_operator_cluster_role_binding",
     "kubernetes_service.istio_operator_service",
-    "null_resource.istio_operator_controller",
+    "kubernetes_deployment.istio_operator_controller"
   ]
 }
