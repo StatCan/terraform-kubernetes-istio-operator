@@ -268,7 +268,7 @@ resource "kubernetes_deployment" "istio_operator_controller" {
             name = "LEADER_ELECTION_NAMESPACE"
             value_from {
               field_ref {
-                metadata.namespace
+                field_path = "metadata.namespace"
               }
             }
           }
@@ -277,7 +277,7 @@ resource "kubernetes_deployment" "istio_operator_controller" {
             name = "POD_NAME"
             value_from {
               field_ref  {
-                metadata.name
+                field_path = "metadata.name"
               }
             }
           }
@@ -335,6 +335,6 @@ resource "null_resource" "dependency_setter" {
     "kubernetes_cluster_role.istio_operator_cluster_role",
     "kubernetes_cluster_role_binding.istio_operator_cluster_role_binding",
     "kubernetes_service.istio_operator_service",
-    "null_resource.istio_operator_controller",
+    "kubernetes_deployment.istio_operator_controller"
   ]
 }
