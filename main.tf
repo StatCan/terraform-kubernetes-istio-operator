@@ -247,6 +247,8 @@ resource "kubernetes_deployment" "istio_operator_controller" {
           image             = "${var.hub}/operator:${var.tag}"
           image_pull_policy = "IfNotPresent"
 
+          command = ["operator", "server"]
+
           resources {
             limits = {
               cpu    = "200m"
