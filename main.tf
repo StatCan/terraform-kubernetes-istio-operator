@@ -267,14 +267,18 @@ resource "kubernetes_deployment" "istio_operator_controller" {
           env {
             name = "LEADER_ELECTION_NAMESPACE"
             value_from {
-              field_ref = "metadata.namespace"
+              field_ref {
+                metadata.namespace
+              }
             }
           }
 
           env {
             name = "POD_NAME"
             value_from {
-              field_ref = "metadata.name"
+              field_ref  {
+                metadata.name
+              }
             }
           }
 
