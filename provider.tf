@@ -1,5 +1,5 @@
 terraform {
   required_providers {
-    kubernetes = "=> v2.0.0"
+    kubernetes = ">= 2.0.0"
   }
 }
