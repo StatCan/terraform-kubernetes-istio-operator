@@ -48,11 +48,6 @@ resource "null_resource" "istio_operator_crd" {
     command = "kubectl apply -f ${"${path.module}/config/iop-crd.yaml"}"
   }
 
-  provisioner "local-exec" {
-    when    = destroy
-    command = "kubectl delete crd istiooperators.install.istio.io"
-  }
-
   depends_on = [
     "null_resource.dependency_getter",
   ]
