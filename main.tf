@@ -220,7 +220,8 @@ resource "kubernetes_service" "istio_operator_service" {
 
 resource "kubernetes_deployment" "istio_operator_controller" {
   metadata {
-    name = "istio-operator"
+    name      = "istio-operator"
+    namespace = var.namespace
   }
 
   spec {
