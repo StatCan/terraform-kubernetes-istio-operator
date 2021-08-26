@@ -1,8 +1,3 @@
-variable "dependencies" {
-  description = "The dependencies that this module has so that Terraform may build the dependency graph correctly."
-  type        = "list"
-}
-
 variable "istio_namespace" {
   description = "The namespace where Istio should be installed."
   default     = "istio-system"

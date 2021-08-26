@@ -1,22 +1,3 @@
-# Part of a hack for module-to-module dependencies.
-# https://github.com/hashicorp/terraform/issues/1178#issuecomment-449158607
-# and
-# https://github.com/hashicorp/terraform/issues/1178#issuecomment-473091030
-# Make sure to add this null_resource.dependency_getter to the `depends_on`
-# attribute to all resource(s) that will be constructed first within this
-# module:
-resource "null_resource" "dependency_getter" {
-  triggers = {
-    my_dependencies = "${join(",", var.dependencies)}"
-  }
-
-  lifecycle {
-    ignore_changes = [
-      triggers["my_dependencies"],
-    ]
-  }
-}
-
 # Unable to use kubernetes provider for CRDs
 # This will be rectified once we are on 1.17 and the kubernetes provider is officially updated 
 # https://www.hashicorp.com/blog/deploy-any-resource-with-the-new-kubernetes-provider-for-hashicorp-terraform/
@@ -33,10 +14,6 @@ resource "null_resource" "istio_operator_namespace_label" {
     when    = destroy
     command = "kubectl label ns ${self.triggers.namespace} istio-operator-managed- istio-injection-"
   }
-
-  depends_on = [
-    "null_resource.dependency_getter",
-  ]
 }
 
 resource "null_resource" "istio_operator_crd" {
@@ -47,10 +24,6 @@ resource "null_resource" "istio_operator_crd" {
   provisioner "local-exec" {
     command = "kubectl apply -f ${"${path.module}/config/iop-crd.yaml"}"
   }
-
-  depends_on = [
-    "null_resource.dependency_getter",
-  ]
 }
 
 
@@ -61,10 +34,6 @@ resource "kubernetes_service_account" "istio_operator_service_account" {
   }
 
   automount_service_account_token = true
-
-  depends_on = [
-    "null_resource.dependency_getter",
-  ]
 }
 
 resource "kubernetes_cluster_role" "istio_operator_cluster_role" {
@@ -157,10 +126,6 @@ resource "kubernetes_cluster_role" "istio_operator_cluster_role" {
     resources  = ["configmaps", "endpoints", "events", "namespaces", "pods", "persistentvolumeclaims", "secrets", "services", "serviceaccounts"]
     verbs      = ["*"]
   }
-
-  depends_on = [
-    "null_resource.dependency_getter",
-  ]
 }
 
 
@@ -182,8 +147,7 @@ resource "kubernetes_cluster_role_binding" "istio_operator_cluster_role_binding"
   }
 
   depends_on = [
-    "null_resource.dependency_getter",
-    "kubernetes_cluster_role.istio_operator_cluster_role",
+    kubernetes_cluster_role.istio_operator_cluster_role,
   ]
 }
 
@@ -207,10 +171,6 @@ resource "kubernetes_service" "istio_operator_service" {
       target_port = 8383
     }
   }
-
-  depends_on = [
-    "null_resource.dependency_getter",
-  ]
 }
 
 resource "kubernetes_deployment" "istio_operator_controller" {
@@ -274,7 +234,7 @@ resource "kubernetes_deployment" "istio_operator_controller" {
           env {
             name = "POD_NAME"
             value_from {
-              field_ref  {
+              field_ref {
                 field_path = "metadata.name"
               }
             }
@@ -314,25 +274,8 @@ resource "null_resource" "istio_operator" {
   }
 
   depends_on = [
-    "null_resource.dependency_getter",
-    "kubernetes_service_account.istio_operator_service_account",
-    "local_file.istio_operator",
-    "null_resource.istio_operator_crd",
-  ]
-}
-
-# Part of a hack for module-to-module dependencies.
-# https://github.com/hashicorp/terraform/issues/1178#issuecomment-449158607
-resource "null_resource" "dependency_setter" {
-  # Part of a hack for module-to-module dependencies.
-  # https://github.com/hashicorp/terraform/issues/1178#issuecomment-449158607
-  # List resource(s) that will be constructed last within the module.
-  depends_on = [
-    "null_resource.istio_operator_crd",
-    "kubernetes_service_account.istio_operator_service_account",
-    "kubernetes_cluster_role.istio_operator_cluster_role",
-    "kubernetes_cluster_role_binding.istio_operator_cluster_role_binding",
-    "kubernetes_service.istio_operator_service",
-    "kubernetes_deployment.istio_operator_controller"
+    kubernetes_service_account.istio_operator_service_account,
+    local_file.istio_operator,
+    null_resource.istio_operator_crd,
   ]
 }
