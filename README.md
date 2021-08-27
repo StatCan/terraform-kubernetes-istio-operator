@@ -65,7 +65,6 @@ EOF
 | Name            | Type            | Required | Default Value   | Description                                                    |
 | --------------- | --------------- | -------- | --------------- | -------------------------------------------------------------- |
 | namespace       | string          | no       | istio-operator  | The namespace in which to install the Istio Operator.          |
-| dependencies    | list of strings | no       |                 | The Terraform dependencies to be used by the module.           |
 | hub             | string          | no       | docker.io/istio | The hub where the image repositories are located.              |
 | tag             | string          | no       | 1.6.8           | The tag of the version of the Istio Operator to install.       |
 | istio_namespace | string          | no       | istio-system    | The namespace where the Istio control plane will be installed. |
