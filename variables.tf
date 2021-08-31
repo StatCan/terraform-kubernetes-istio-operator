@@ -1,6 +1,7 @@
-variable "istio_namespace" {
-  description = "The namespace where Istio should be installed."
-  default     = "istio-system"
+variable "watch_namespaces" {
+  description = "The namespaces that the Operator should watch for IstioOperator manifests. Empty for all Namespaces."
+  type        = list(string)
+  default     = ["istio-system"]
 }
 
 variable "hub" {
@@ -16,9 +17,4 @@ variable "namespace" {
 variable "tag" {
   description = "The image tag to use."
   default     = "1.6.14"
-}
-
-variable "iop_spec" {
-  description = "The specification of the IstioOperator API."
-  default     = ""
 }

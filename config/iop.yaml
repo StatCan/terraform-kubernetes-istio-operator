@@ -1,6 +1,0 @@
-kind: IstioOperator
-apiVersion: install.istio.io/v1alpha1
-metadata:
-  name: istio
-spec:
-  ${indent(2, spec)}
