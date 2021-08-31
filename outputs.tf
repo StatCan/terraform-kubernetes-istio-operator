@@ -1,3 +1,3 @@
-output "helm_namespace" {
+output "namespace" {
   value = var.namespace
 }
