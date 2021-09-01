@@ -77,12 +77,28 @@ terraform state rm module.$module_name.null_resource.istio_operator;
 # istio-operator Deployment can now be deployed with the provider due
 # to fieldRefs being added.
 terraform state rm module.$module_name.null_resource.istio_operator_controller
-# Replace istio-operator namespace if not in default location
-terraform import module.$module_name.kubernetes_deployment.istio_operator_controller $namespace/istio-operator;
 
 # Remove the installation of the CRD via null_resource
 terraform state rm module.$module_name.null_resource.istio_operator_crd;
+
+# Replace istio-operator namespace if not in default location
+terraform import module.$module_name.kubernetes_deployment.istio_operator_controller $namespace/istio-operator;
 ```
+
+## CRD Installation
+There seem to be some regressions when it comes to the CRD that is installed via `istioctl`. Following is a table of 
+the CRD versions that are installed in each `istioctl` version:
+
+| istioctl Version | CRD Version                                           |
+| ---------------- | ----------------------------------------------------- |
+| v1.6.14          | CustomResourceDefinition.apiextensions.k8s.io/v1beta1 |
+| v1.7.8           | CustomResourceDefinition.apiextensions.k8s.io/v1      |
+| v1.8.6           | CustomResourceDefinition.apiextensions.k8s.io/v1beta1 |
+
+Note: the v1beta1 CRDs are missing the `type` parameter under **spec.validation.openAPIV3Schema** which causes some 
+validation issues with `kubernetes_manifest` resources.
+
+To combat this, the v1 CRD has been backported to v2.0.0 to simplify installations.
 
 ## History
 
