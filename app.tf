@@ -43,7 +43,7 @@ resource "kubernetes_deployment" "istio_operator_controller" {
       }
 
       spec {
-        service_account_name = "istio-operator"
+        service_account_name = kubernetes_service_account.istio_operator_service_account.metadata[0].name
 
         container {
           name              = "istio-operator"
@@ -51,6 +51,18 @@ resource "kubernetes_deployment" "istio_operator_controller" {
           image_pull_policy = "IfNotPresent"
 
           command = ["operator", "server"]
+
+          security_context {
+            allow_privilege_escalation = false
+            capabilities {
+              drop = ["ALL"]
+            }
+            privileged                = false
+            read_only_root_filesystem = true
+            run_as_group              = 1337
+            run_as_user               = 1337
+            run_as_non_root           = true
+          }
 
           resources {
             limits = {
@@ -90,6 +102,16 @@ resource "kubernetes_deployment" "istio_operator_controller" {
           env {
             name  = "OPERATOR_NAME"
             value = "istio-operator"
+          }
+
+          env {
+            name  = "WAIT_FOR_RESOURCES_TIMEOUT"
+            value = "${floor(var.wait_for_resources_timeout)}s"
+          }
+
+          env {
+            name  = "REVISION"
+            value = ""
           }
         }
       }

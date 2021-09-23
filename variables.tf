@@ -4,6 +4,12 @@ variable "watch_namespaces" {
   default     = ["istio-system"]
 }
 
+variable "wait_for_resources_timeout" {
+  description = "The amount of seconds that the operator should wait for a timeout."
+  type        = number
+  default     = 300
+}
+
 variable "hub" {
   description = "The hub where the image repository is located."
   default     = "docker.io/istio"
@@ -16,5 +22,5 @@ variable "namespace" {
 
 variable "tag" {
   description = "The image tag to use."
-  default     = "1.6.14"
+  default     = "1.7.8"
 }
