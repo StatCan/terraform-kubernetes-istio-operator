@@ -1,7 +1,8 @@
 # Terraform Kubernetes Istio Operator
 
 ## Introduction
-This module installs the Istio Operator v1.6.14. It attempts to replicate the installation via:
+
+This module installs the Istio Operator v1.7.8. It attempts to replicate the installation via:
 
 ```bash
 istioctl operator init
@@ -38,7 +39,7 @@ As of release v2.0.0, versioning will return to SEMVER so as to simplify release
 
 ```terraform
 module "istio_operator" {
-  source = "git::https://github.com/canada-ca-terraform-modules/terraform-kubernetes-istio-operator.git?ref=v2.0.0"
+  source = "git::https://github.com/canada-ca-terraform-modules/terraform-kubernetes-istio-operator.git?ref=v2.1.0"
 
   # The following are variables that can be specified, but come with sane defaults
   namespace        = "istio-operator"
@@ -48,14 +49,16 @@ module "istio_operator" {
 
 ## Variables Values
 
-| Name             | Type         | Required | Default Value    | Description                                                                                          |
-| ---------------- | ------------ | -------- | ---------------- | ---------------------------------------------------------------------------------------------------- |
-| namespace        | string       | no       | istio-operator   | The namespace in which to install the Istio Operator.                                                |
-| hub              | string       | no       | docker.io/istio  | The hub where the image repositories are located.                                                    |
-| tag              | string       | no       | 1.6.14           | The tag of the image to use. WARNING: Use at own risk.                                               |
-| watch_namespaces | list(string) | no       | ["istio-system"] | The namespaces that the Operator should watch for IstioOperator manifests. Empty for all Namespaces. |
+| Name                       | Type         | Required | Default Value     | Description                                                                                          |
+| -------------------------- | ------------ | -------- | ----------------- | ---------------------------------------------------------------------------------------------------- |
+| namespace                  | string       | no       | "istio-operator"  | The namespace in which to install the Istio Operator.                                                |
+| hub                        | string       | no       | "docker.io/istio" | The hub where the image repositories are located.                                                    |
+| tag                        | string       | no       | "1.7.8"           | The tag of the image to use. WARNING: Use at own risk.                                               |
+| wait_for_resources_timeout | number       | no       | 300               | The amount of seconds that the operator should wait for a timeout.                                   |
+| watch_namespaces           | list(string) | no       | ["istio-system"]  | The namespaces that the Operator should watch for IstioOperator manifests. Empty for all Namespaces. |
 
-## Migrating to v2+
+## Updating Modules
+### Migrating to v2+
 There are 4 major changes in v2.0.0:
  - Labels on the namespace are no longer being set by the module (see [Namespace Label Requirements](#namespace-label-requirements))
  - Use of a Helm chart to deploy CRDs via `helm_release` resource instead of `kubectl` via the `null_resource`
@@ -112,3 +115,4 @@ To combat this, the v1 CRD has been backported to v2.0.0 to simplify installatio
 | 20210824 | v1.0.1-tf13 | Align module to work with Terraform v0.13                 |
 | 20210830 | v2.0.0      | Use new `kubernetes_manifest` resource from provider 2.4+ |
 | -        | -           | Move out the installation of the IstioOperator manifest   |
+| 20210831 | v2.1.0      | Update resources for Istio 1.7.8                          |

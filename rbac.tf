@@ -38,12 +38,6 @@ resource "kubernetes_cluster_role" "istio_operator_cluster_role" {
   }
 
   rule {
-    api_groups = ["rbac.istio.io"]
-    resources  = ["*"]
-    verbs      = ["*"]
-  }
-
-  rule {
     api_groups = ["security.istio.io"]
     resources  = ["*"]
     verbs      = ["*"]
@@ -93,8 +87,14 @@ resource "kubernetes_cluster_role" "istio_operator_cluster_role" {
   }
 
   rule {
+    api_groups = ["coordination.k8s.io"]
+    resources  = ["leases"]
+    verbs      = ["get", "create", "update"]
+  }
+
+  rule {
     api_groups = [""]
-    resources  = ["configmaps", "endpoints", "events", "namespaces", "pods", "persistentvolumeclaims", "secrets", "services", "serviceaccounts"]
+    resources  = ["configmaps", "endpoints", "events", "namespaces", "pods", "pod/proxy", "persistentvolumeclaims", "secrets", "services", "serviceaccounts"]
     verbs      = ["*"]
   }
 }
