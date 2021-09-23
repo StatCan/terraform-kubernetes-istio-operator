@@ -1,14 +1,13 @@
 # Terraform Kubernetes Istio Operator
 
 ## Introduction
-
-This module installs the Istio Operator v1.6.14. It attempts to replicate the installation via: 
+This module installs the Istio Operator v1.6.14. It attempts to replicate the installation via:
 
 ```bash
 istioctl operator init
 ```
 
-The ability to specify the **tag** of the image is available, however, this may cause issues since this 
+The ability to specify the **tag** of the image is available, however, this may cause issues since this
 module uses the manifests of a specific version.
 
 ## Security Controls
@@ -20,7 +19,8 @@ The following security controls can be met through configuration of this templat
 ## Requirements
 * The namespace where Istio Operator is to be installed should already be created. (default istio-operator)
 * Terraform v0.13+
-* terraform-provider-kubernetes 2.4+ with `manifest_resource = true`
+* terraform-provider-kubernetes 2.4+
+* terraform-provider-helm 2.0+
 
 ## Namespace Label Requirements
 The namespace provided as the *namespace* variable requires the following labels:
@@ -58,11 +58,14 @@ module "istio_operator" {
 ## Migrating to v2+
 There are 4 major changes in v2.0.0:
  - Labels on the namespace are no longer being set by the module (see [Namespace Label Requirements](#namespace-label-requirements))
- - Use of the `kubernetes_manifest` to deploy CRDs instead of `kubectl` via the `null_resource`
+ - Use of a Helm chart to deploy CRDs via `helm_release` resource instead of `kubectl` via the `null_resource`
+    Note: the terraform-provider-kubernetes `kubernetes_manifest` was attempted to be used, however, in its current beta state
+    it has difficulties reconciling resources and is still in beta.
  - Extracting the deployment of the **IstioOperator** manifest to allow for multiple IstioOperator configuration (important for Canary deployments)
- - Change of the `istio_namespace` variable to `watch_namespaces` for configurations that are more contextualized to the operator
+ - Change of the `istio_namespace` variable to `watch_namespaces` for configurations that are more contextualized to the operator.
+  This allows for the IstioOperator manifest to be deployed and actioned by the controller in these namespaces.
 
-To prevent some destructive changes from happening, the following commands will need to be run:
+To ensure the , the following commands will need to be run:
 ```bash
 module_name=istio_operator; # The label used for the module. Change based on your usage.
 namespace=istio-operator; # Value entered as namespace in module < v2.0.0
@@ -86,7 +89,7 @@ terraform import module.$module_name.kubernetes_deployment.istio_operator_contro
 ```
 
 ## CRD Installation
-There seem to be some regressions when it comes to the CRD that is installed via `istioctl`. Following is a table of 
+There seem to be some regressions when it comes to the CRD that is installed via `istioctl`. Following is a table of
 the CRD versions that are installed in each `istioctl` version:
 
 | istioctl Version | CRD Version                                           |
@@ -95,7 +98,7 @@ the CRD versions that are installed in each `istioctl` version:
 | v1.7.8           | CustomResourceDefinition.apiextensions.k8s.io/v1      |
 | v1.8.6           | CustomResourceDefinition.apiextensions.k8s.io/v1beta1 |
 
-Note: the v1beta1 CRDs are missing the `type` parameter under **spec.validation.openAPIV3Schema** which causes some 
+Note: the v1beta1 CRDs are missing the `type` parameter under **spec.validation.openAPIV3Schema** which causes some
 validation issues with `kubernetes_manifest` resources.
 
 To combat this, the v1 CRD has been backported to v2.0.0 to simplify installations.
