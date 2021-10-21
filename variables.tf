@@ -24,3 +24,28 @@ variable "tag" {
   description = "The image tag to use."
   default     = "1.7.8"
 }
+
+variable "resources" {
+  description = "The resource requests and limits for the deployment."
+  type = object({
+    limits = object({
+      cpu    = string
+      memory = string
+    })
+    requests = object({
+      cpu    = string
+      memory = string
+    })
+  })
+
+  default = {
+    limits = {
+      cpu    = "200m"
+      memory = "256Mi"
+    }
+    requests = {
+      cpu    = "50m"
+      memory = "128Mi"
+    }
+  }
+}

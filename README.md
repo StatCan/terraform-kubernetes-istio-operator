@@ -49,13 +49,14 @@ module "istio_operator" {
 
 ## Variables Values
 
-| Name                       | Type         | Required | Default Value     | Description                                                                                          |
-| -------------------------- | ------------ | -------- | ----------------- | ---------------------------------------------------------------------------------------------------- |
-| namespace                  | string       | no       | "istio-operator"  | The namespace in which to install the Istio Operator.                                                |
-| hub                        | string       | no       | "docker.io/istio" | The hub where the image repositories are located.                                                    |
-| tag                        | string       | no       | "1.7.8"           | The tag of the image to use. WARNING: Use at own risk.                                               |
-| wait_for_resources_timeout | number       | no       | 300               | The amount of seconds that the operator should wait for a timeout.                                   |
-| watch_namespaces           | list(string) | no       | ["istio-system"]  | The namespaces that the Operator should watch for IstioOperator manifests. Empty for all Namespaces. |
+| Name                       | Type         | Required | Default Value                    | Description                                                                                          |
+| -------------------------- | ------------ | -------- | -------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| namespace                  | string       | no       | "istio-operator"                 | The namespace in which to install the Istio Operator.                                                |
+| hub                        | string       | no       | "docker.io/istio"                | The hub where the image repositories are located.                                                    |
+| resources                  | object       | no       | see [variables.tf](variables.tf) | The resource requests and limits for the deployment.                                                 |
+| tag                        | string       | no       | "1.7.8"                          | The tag of the image to use. WARNING: Use at own risk.                                               |
+| wait_for_resources_timeout | number       | no       | 300                              | The amount of seconds that the operator should wait for a timeout.                                   |
+| watch_namespaces           | list(string) | no       | ["istio-system"]                 | The namespaces that the Operator should watch for IstioOperator manifests. Empty for all Namespaces. |
 
 ## Updating Modules
 ### Migrating to v2+
@@ -116,3 +117,4 @@ To combat this, the v1 CRD has been backported to v2.0.0 to simplify installatio
 | 20210830 | v2.0.0      | Use new `kubernetes_manifest` resource from provider 2.4+ |
 | -        | -           | Move out the installation of the IstioOperator manifest   |
 | 20210831 | v2.1.0      | Update resources for Istio 1.7.8                          |
+| 20211021 | v2.1.1      | Add ability to specify resources.                         |
