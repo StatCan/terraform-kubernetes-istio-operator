@@ -65,15 +65,8 @@ resource "kubernetes_deployment" "istio_operator_controller" {
           }
 
           resources {
-            limits = {
-              cpu    = "200m"
-              memory = "256Mi"
-            }
-
-            requests = {
-              cpu    = "50m"
-              memory = "128Mi"
-            }
+            limits   = var.resources.limits
+            requests = var.resources.requests
           }
 
           env {
