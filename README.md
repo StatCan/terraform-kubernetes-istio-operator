@@ -39,7 +39,7 @@ As of release v2.0.0, versioning will return to SEMVER so as to simplify release
 
 ```terraform
 module "istio_operator" {
-  source = "git::https://github.com/canada-ca-terraform-modules/terraform-kubernetes-istio-operator.git?ref=v2.1.0"
+  source = "git::https://github.com/canada-ca-terraform-modules/terraform-kubernetes-istio-operator.git?ref=v2.2.0"
 
   # The following are variables that can be specified, but come with sane defaults
   namespace        = "istio-operator"
