@@ -120,4 +120,4 @@ To combat this, the v1 CRD has been backported to v2.0.0 to simplify installatio
 | 20210831 | v2.1.0      | Update resources for Istio 1.7.8                          |
 | 20211021 | v2.1.1      | Add ability to specify resources.                         |
 | 20220225 | v2.2.0      | Add output of tag                                         |
-| 20220511 | v2.2.0      | Add ability to set nodeSelectors.                         |
+| 20220511 | v2.3.0      | Add ability to set nodeSelectors.                         |
