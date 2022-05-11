@@ -20,6 +20,12 @@ variable "namespace" {
   default     = "istio-operator"
 }
 
+variable "node_selector" {
+  description = "nodeSelectors to set on the operators Pod."
+  type        = map(string)
+  default     = {}
+}
+
 variable "tag" {
   description = "The image tag to use."
   default     = "1.7.8"

@@ -53,6 +53,7 @@ module "istio_operator" {
 | -------------------------- | ------------ | -------- | -------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | namespace                  | string       | no       | "istio-operator"                 | The namespace in which to install the Istio Operator.                                                |
 | hub                        | string       | no       | "docker.io/istio"                | The hub where the image repositories are located.                                                    |
+| node_selector              | map(string)  | no       | {}                               | `nodeSelector`s that should be added to the operators Pod.                                           |
 | resources                  | object       | no       | see [variables.tf](variables.tf) | The resource requests and limits for the deployment.                                                 |
 | tag                        | string       | no       | "1.7.8"                          | The tag of the image to use. WARNING: Use at own risk.                                               |
 | wait_for_resources_timeout | number       | no       | 300                              | The amount of seconds that the operator should wait for a timeout.                                   |
@@ -119,3 +120,4 @@ To combat this, the v1 CRD has been backported to v2.0.0 to simplify installatio
 | 20210831 | v2.1.0      | Update resources for Istio 1.7.8                          |
 | 20211021 | v2.1.1      | Add ability to specify resources.                         |
 | 20220225 | v2.2.0      | Add output of tag                                         |
+| 20220511 | v2.2.0      | Add ability to set nodeSelectors.                         |
