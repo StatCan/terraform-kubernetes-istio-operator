@@ -45,6 +45,8 @@ resource "kubernetes_deployment" "istio_operator_controller" {
       spec {
         service_account_name = kubernetes_service_account.istio_operator_service_account.metadata[0].name
 
+        node_selector = var.node_selector
+
         container {
           name              = "istio-operator"
           image             = "${var.hub}/operator:${var.tag}"
