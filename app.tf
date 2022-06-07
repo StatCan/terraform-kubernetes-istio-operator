@@ -16,6 +16,7 @@ resource "kubernetes_service" "istio_operator_service" {
       name        = "http-metrics"
       port        = 8383
       target_port = 8383
+      protocol    = "TCP"
     }
   }
 }

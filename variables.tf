@@ -28,7 +28,7 @@ variable "node_selector" {
 
 variable "tag" {
   description = "The image tag to use."
-  default     = "1.7.8"
+  default     = "1.8.6"
 }
 
 variable "resources" {

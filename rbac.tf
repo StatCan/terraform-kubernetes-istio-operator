@@ -43,7 +43,7 @@ resource "kubernetes_cluster_role" "istio_operator_cluster_role" {
     verbs      = ["*"]
   }
 
-  # k8s groups 
+  # k8s groups
   rule {
     api_groups = ["admissionregistration.k8s.io"]
     resources  = ["mutatingwebhookconfigurations", "validatingwebhookconfigurations"]
