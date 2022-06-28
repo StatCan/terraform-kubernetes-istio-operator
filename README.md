@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This module installs the Istio Operator v1.8.6. It attempts to replicate the installation via:
+This module installs the Istio Operator v1.10.6. It attempts to replicate the installation via:
 
 ```bash
 istioctl operator init
@@ -109,6 +109,8 @@ the CRD versions that are installed in each `istioctl` version:
 | v1.6.14          | CustomResourceDefinition.apiextensions.k8s.io/v1beta1 |
 | v1.7.8           | CustomResourceDefinition.apiextensions.k8s.io/v1      |
 | v1.8.6           | CustomResourceDefinition.apiextensions.k8s.io/v1beta1 |
+| v1.9.9           | CustomResourceDefinition.apiextensions.k8s.io/v1beta1 |
+| v1.10.6          | CustomResourceDefinition.apiextensions.k8s.io/v1      |
 
 Note: the v1beta1 CRDs are missing the `type` parameter under **spec.validation.openAPIV3Schema** which causes some
 validation issues with `kubernetes_manifest` resources.
@@ -129,3 +131,4 @@ To combat this, the v1 CRD has been backported to v2.0.0 to simplify installatio
 | 20220225 | v2.2.0      | Add output of tag                                         |
 | 20220511 | v2.3.0      | Add ability to set nodeSelectors.                         |
 | 20220607 | v2.4.0      | Update resources for Istio 1.8.6                          |
+| 20220628 | v2.5.0      | Update resources for Istio 1.10.6                         |
