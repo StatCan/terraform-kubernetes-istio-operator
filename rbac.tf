@@ -46,20 +46,31 @@ resource "kubernetes_cluster_role" "istio_operator_cluster_role" {
   # k8s groups
   rule {
     api_groups = ["admissionregistration.k8s.io"]
-    resources  = ["mutatingwebhookconfigurations", "validatingwebhookconfigurations"]
-    verbs      = ["*"]
+    resources = [
+      "mutatingwebhookconfigurations",
+      "validatingwebhookconfigurations",
+    ]
+    verbs = ["*"]
   }
 
   rule {
     api_groups = ["apiextensions.k8s.io"]
-    resources  = ["customresourcedefinitions.apiextensions.k8s.io", "customresourcedefinitions"]
-    verbs      = ["*"]
+    resources = [
+      "customresourcedefinitions.apiextensions.k8s.io",
+      "customresourcedefinitions",
+    ]
+    verbs = ["*"]
   }
 
   rule {
     api_groups = ["apps", "extensions"]
-    resources  = ["daemonsets", "deployments", "deployments/finalizers", "ingresses", "replicasets", "statefulsets"]
-    verbs      = ["*"]
+    resources = [
+      "daemonsets",
+      "deployments",
+      "deployments/finalizers",
+      "replicasets",
+    ]
+    verbs = ["*"]
   }
 
   rule {
@@ -71,7 +82,11 @@ resource "kubernetes_cluster_role" "istio_operator_cluster_role" {
   rule {
     api_groups = ["monitoring.coreos.com"]
     resources  = ["servicemonitors"]
-    verbs      = ["get", "create", "update"]
+    verbs = [
+      "get",
+      "create",
+      "update",
+    ]
   }
 
   rule {
@@ -82,8 +97,13 @@ resource "kubernetes_cluster_role" "istio_operator_cluster_role" {
 
   rule {
     api_groups = ["rbac.authorization.k8s.io"]
-    resources  = ["clusterrolebindings", "clusterroles", "roles", "rolebindings"]
-    verbs      = ["*"]
+    resources = [
+      "clusterrolebindings",
+      "clusterroles",
+      "roles",
+      "rolebindings",
+    ]
+    verbs = ["*"]
   }
 
   rule {
@@ -94,8 +114,21 @@ resource "kubernetes_cluster_role" "istio_operator_cluster_role" {
 
   rule {
     api_groups = [""]
-    resources  = ["configmaps", "endpoints", "events", "namespaces", "pods", "pod/proxy", "persistentvolumeclaims", "secrets", "services", "serviceaccounts"]
-    verbs      = ["*"]
+    resources = [
+      "configmaps",
+      "endpoints",
+      "events",
+      "namespaces",
+      "pods",
+      "pods/portforward",
+      "pod/proxy",
+      "persistentvolumeclaims",
+      "resourcequotas",
+      "secrets",
+      "services",
+      "serviceaccounts",
+    ]
+    verbs = ["*"]
   }
 }
 
