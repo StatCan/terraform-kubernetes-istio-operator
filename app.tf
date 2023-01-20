@@ -28,7 +28,8 @@ resource "kubernetes_deployment" "istio_operator_controller" {
   }
 
   spec {
-    replicas = 1
+    replicas               = 1
+    revision_history_limit = 10
 
     selector {
       match_labels = {

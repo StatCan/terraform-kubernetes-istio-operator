@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This module installs the Istio Operator v1.10.6. It attempts to replicate the installation via:
+This module installs the Istio Operator v1.16.1. It attempts to replicate the installation via:
 
 ```bash
 istioctl operator init
@@ -42,7 +42,7 @@ As of release v2.0.0, versioning will return to SEMVER so as to simplify release
 
 ```terraform
 module "istio_operator" {
-  source = "git::https://github.com/canada-ca-terraform-modules/terraform-kubernetes-istio-operator.git?ref=v2.4.0"
+  source = "git::https://github.com/canada-ca-terraform-modules/terraform-kubernetes-istio-operator.git?ref=v2.6.0"
 
   # The following are variables that can be specified, but come with sane defaults
   namespace        = "istio-operator"
@@ -58,7 +58,7 @@ module "istio_operator" {
 | hub                        | string       | no       | "docker.io/istio"                | The hub where the image repositories are located.                                                    |
 | node_selector              | map(string)  | no       | {}                               | `nodeSelector`s that should be added to the operators Pod.                                           |
 | resources                  | object       | no       | see [variables.tf](variables.tf) | The resource requests and limits for the deployment.                                                 |
-| tag                        | string       | no       | "1.8.6"                          | The tag of the image to use. WARNING: Use at own risk.                                               |
+| tag                        | string       | no       | "1.16.1"                         | The tag of the image to use. WARNING: Use at own risk.                                               |
 | wait_for_resources_timeout | number       | no       | 300                              | The amount of seconds that the operator should wait for a timeout.                                   |
 | watch_namespaces           | list(string) | no       | ["istio-system"]                 | The namespaces that the Operator should watch for IstioOperator manifests. Empty for all Namespaces. |
 
@@ -111,6 +111,7 @@ the CRD versions that are installed in each `istioctl` version:
 | v1.8.6           | CustomResourceDefinition.apiextensions.k8s.io/v1beta1 |
 | v1.9.9           | CustomResourceDefinition.apiextensions.k8s.io/v1beta1 |
 | v1.10.6          | CustomResourceDefinition.apiextensions.k8s.io/v1      |
+| v1.16.1          | CustomResourceDefinition.apiextensions.k8s.io/v1      |
 
 Note: the v1beta1 CRDs are missing the `type` parameter under **spec.validation.openAPIV3Schema** which causes some
 validation issues with `kubernetes_manifest` resources.
@@ -132,3 +133,4 @@ To combat this, the v1 CRD has been backported to v2.0.0 to simplify installatio
 | 20220511 | v2.3.0      | Add ability to set nodeSelectors.                         |
 | 20220607 | v2.4.0      | Update resources for Istio 1.8.6                          |
 | 20220628 | v2.5.0      | Update resources for Istio 1.10.6                         |
+| 20220628 | v2.6.0      | Update resources for Istio 1.16.1                         |
